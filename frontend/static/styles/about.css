@@ -1,0 +1,51 @@
+h1,
+h2,
+h3 {
+  color: var(--color-accent);
+}
+
+body {
+  overflow: auto;
+}
+
+header.sticky {
+  position: sticky;
+  top: 0;
+}
+
+header a::after {
+  display: none;
+}
+
+main {
+  max-width: 600px;
+  margin: auto;
+  padding-bottom: 30px;
+}
+
+/* Source for changing the color of the list bullets: https://www.w3schools.com/howto/howto_css_bullet_color.asp */
+
+ul {
+  list-style: none;
+}
+
+ul li::before {
+  content: "\2022";
+  color: var(--color-accent);
+  font-weight: bold;
+  font-size: larger;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+.license-container {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: var(--color-background-darker);
+  box-shadow: var(--box-shadow);
+}
+
+main .highlight {
+  color: var(--color-accent);
+}

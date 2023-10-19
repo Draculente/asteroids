@@ -1,0 +1,11 @@
+flask
+flask-jwt-extended
+flask-swagger-ui
+flask-swagger
+waitress
+python-dotenv
+flask-sqlalchemy
+sqlalchemy-utils
+mysql-connector-python
+psycopg2-binary
+flask-cors

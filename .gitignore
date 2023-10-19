@@ -1,0 +1,4 @@
+.kubeconfig.yml
+.vscode
+.env
+out

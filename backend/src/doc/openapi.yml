@@ -1,0 +1,403 @@
+openapi: 3.0.0
+info:
+  title: Asteroids-API-Dokumentation
+  description: "Ein Projekt für das Modul 'Web- und Cloud Computing-Projekt' im SoSe 2023 an der Technischen Hochschule Lübeck."
+  version: 1.0.0
+servers:
+  - url: "/api/v1"
+  - url: "http://localhost:5000/api/v1"
+  - url: "{protocol}://{host}:{port}/{endpoint}"
+    variables:
+      protocol:
+        enum:
+          - "http"
+          - "https"
+        default: "http"
+      host: 
+        default: "localhost"
+      port:
+        enum:
+          - '443'
+          - '5000'
+        default: '5000'
+      endpoint:
+        default: api/v1
+
+paths:
+  /user:
+    get:
+      summary: Ruft Benutzerinformationen ab
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Erfolgreiche Anfrage
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+    post:
+      summary: Erstellt einen neuen Benutzer
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        201:
+          description: Benutzer erfolgreich erstellt
+    delete:
+      summary: Löscht den Benutzer
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Benutzer erfolgreich gelöscht
+  /user/login:
+    post:
+      summary: Benutzeranmeldung
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Erfolgreiche Anmeldung
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+  /games:
+    get:
+      summary: Ruft alle Spiele des Benutzers ab
+      tags:
+        - games
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: latest
+          in: query
+          description: Wenn auf true gesetzt, gibt nur das neueste Spiel zurück
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Erfolgreiche Anfrage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+    post:
+      summary: Erstellt ein neues Spiel für den aktuellen Benutzer
+      tags:
+        - games
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+      responses:
+        201:
+          description: Spiel erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+  /games/{game_id}:
+    get:
+      summary: Ruft die Details eines bestimmten Spiels ab
+      tags:
+        - games
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: game_id
+          in: path
+          description: ID des Spiels
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Erfolgreiche Anfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+    put:
+      summary: Aktualisiert die Details eines bestimmten Spiels
+      tags:
+        - games
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: game_id
+          in: path
+          description: ID des Spiels
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Spiel erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+    delete:
+      summary: Löscht ein bestimmtes Spiel
+      tags:
+        - games
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: game_id
+          in: path
+          description: ID des Spiels
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Spiel erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /items:
+    get:
+      summary: List all items
+      tags:
+        - items
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      summary: Create a new item
+      tags:
+        - items
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+  /items/{item_id}:
+    get:
+      summary: Get item by ID
+      tags:
+        - items
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: item_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the item
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Löscht ein bestimmtes Item
+      tags: 
+        - items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          description: ID des Items
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Item erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        404:
+          description: Item nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: Item kann nicht gelöscht werden, weil es in einen Spiel verwendet wird
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Aktualisiert ein bestimmtes Item
+      tags:
+        - items
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: item_id
+          in: path
+          description: ID des Items
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        200:
+          description: Item erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        404:
+          description: Item nicht gefunden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+   
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error: 
+      type: object
+      properties:
+        error:
+          type: string
+    ItemLevel:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        item_id:
+          type: integer
+        level:
+          type: integer
+        item: 
+          $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+    Game:
+      type: object
+      properties:
+        id:
+          type: integer
+        score:
+          type: integer
+        coins:
+          type: integer
+        lives:
+          type: integer
+        ended:
+          type: boolean
+        enemy_spawn_timeout:
+          type: integer
+        user_id:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemLevel'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        games:
+          type: array
+          items:
+            $ref: '#/components/schemas/Game'

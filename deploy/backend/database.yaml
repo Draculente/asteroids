@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: master
+        image:  postgres:latest
+        env:
+          - name: "POSTGRES_PASSWORD"
+            value: "1234"
+          - name: "POSTGRES_USER"
+            value: "backend"
+          - name: "POSTGRES_DB"
+            value: "backend"
+          - name: "POSTGRES_HOST_AUTH_METHOD"
+            value: "trust"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: postgres-volume
+        resources:
+          requests:
+            cpu: 25m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 100Mi
+      volumes:
+      - name: postgres-volume
+        persistentVolumeClaim:
+          claimName: postgres-volume-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432

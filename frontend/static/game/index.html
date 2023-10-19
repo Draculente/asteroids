@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asteroids | Game</title>
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/fonts.css">
+  <link rel="stylesheet" href="/styles/game.css">
+  <link rel="shortcut icon" href="/assets/images/favicon.svg">
+</head>
+
+<body>
+  <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+
+  <div class="shooting-stars-bg">
+    <img src="/assets/images/shooting-stars/shooting_star1.svg">
+    <img src="/assets/images/shooting-stars/shooting_star2.svg">
+    <img src="/assets/images/shooting-stars/shooting_star3.svg">
+  </div>
+
+  <header class="header-row">
+    <a class="title" href="/">Asteroids</a>
+    <button id="start">
+      <div class="icon">
+        <div id="pause-icon" class="pause hidden"></div>
+        <img id="play-icon" class="play" src="/assets/images/play-symbol.svg">
+      </div>
+      <span>Play</span>
+    </button>
+    <div id="user-menu-container" class="user-menu-container with-menu">
+      <div id="login-screen-btn" class="btn outline user-badge">
+        <span id="logged-in">Login</span>
+        <span id="username" class="hidden"></span>
+      </div>
+      <div class="menu">
+        <button class="menu-item" id="logout">Logout</button>
+        <button id="end-game" class="menu-item">End Game</button>
+        <button class="menu-item danger" id="delete-account">Delete Account</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="game-over" class="hidden">
+    <div class="rotated">
+      <h1>Game Over</h1>
+      <div class="game-info-container">
+        Coins: <span class="coins"></span>
+        Score: <span class="score"></span>
+      </div>
+
+    </div>
+    <div class="note">Click to restart...</div>
+  </div>
+
+  <div class="error-container hidden" id="error">
+  </div>
+
+  <div class="login-screen-container hidden" id="login-screen">
+    <div class="login-screen">
+      <div id="validating-token" class="message">Logging in...</div>
+      <form id="login-form" class="hidden">
+        <div class="input-container">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Username" required>
+        </div>
+        <div class="input-container">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="btn-container">
+          <button type="button" id="login-btn" class="btn primary">Login</button>
+          <button type="button" id="register-btn" class="btn">Register</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <main>
+    <div id="field">
+      <div id="ship-container">
+        <div id="ship">
+          <img src="/assets/images/ship-asset.svg">
+        </div>
+        <div id="shoot-refill">
+          <div></div>
+        </div>
+      </div>
+
+      <div id="score"></div>
+      <div id="coins">
+        <img src="/assets/images/coin-asset.svg">
+        <span></span>
+      </div>
+      <div id="lives"></div>
+    </div>
+
+    <div class="hotkeys-container">
+      <div id="hotkeys"></div>
+    </div>
+  </main>
+
+  <div id="shop">
+    <div class="shop-container">
+      <div id="shop-close" class="close-btn">
+        <img src="/assets/images/down-arrow.svg" alt="close-cross">
+        <span>Shop</span>
+      </div>
+
+      <div id="shop-item-container" class="shop-item-container">
+
+        <div id="shop-item-template" class="shop-item hidden">
+
+          <div class="shop-item-tooltip">
+            <p class="item-name">Warp Shot Amplifier</p>
+            <div>
+              <img class="shop-item-image" src="/assets/images/shop-items/1.svg" alt="Icon of the Warp Shot Amplifier">
+              <p class="description">Increases the speed of your shots</p>
+            </div>
+          </div>
+
+          <div class="shop-item-info">
+            <p class="item-name">Warp Shot Amplifier</p>
+            <img class="shop-item-image" src="/assets/images/shop-items/1.svg">
+
+            <div class="shop-item-price-container">
+              <img src="/assets/images/coin-asset.svg">
+              <span class="shop-item-price">100</span>
+            </div>
+          </div>
+
+          <div class="shop-item-level">
+            <div class="level inactive"></div>
+            <div class="level inactive"></div>
+            <div class="level inactive"></div>
+            <div class="level active"></div>
+          </div>
+
+
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="loading-container" id="loading-container">
+    <div class="loading" id="loading">
+
+    </div>
+  </div>
+
+  <footer>
+    <a href="/about">About</a>
+    <a href="/">Home</a>
+  </footer>
+
+
+
+
+  <script src="/index.bundle.js"></script>
+</body>
+
+</html>

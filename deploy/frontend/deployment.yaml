@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ CI_COMMIT_REF_NAME }}-frontend"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "{{ CI_COMMIT_REF_NAME }}-frontend"
+  template:
+    metadata:
+      labels:
+        app: "{{ CI_COMMIT_REF_NAME }}-frontend"
+    spec:
+      imagePullSecrets:
+      - name: gitlab-registry-{{ CI_PROJECT_ID }}
+      containers:
+      - name: app
+        image: "{{ CI_REGISTRY_IMAGE }}/frontend-{{ CI_COMMIT_REF_NAME }}:latest"
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          periodSeconds: 60
+          failureThreshold: 1
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "16Mi"
+          limits:
+            cpu: "25m"
+            memory: "64Mi"
+

@@ -1,0 +1,77 @@
+.circle {
+  --diameter: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--diameter);
+  height: var(--diameter);
+  border-radius: 50%;
+  border: var(--color-text-darker) 4px dashed;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%);
+}
+
+.heading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-15px, -15px);
+}
+
+.heading-container .title {
+  font-size: 5.5rem;
+  line-height: 1;
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.01em;
+}
+
+.heading-container .subtitle {
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.nav-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.nav-bar a {
+  color: var(--color-text-lighter);
+  width: min-content;
+}
+
+.nav-bar a::after {
+  color: var(--color-text-lighter);
+}
+
+.btn {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min-content;
+  height: 40px;
+  margin: 0 auto;
+}

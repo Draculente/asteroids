@@ -1,0 +1,187 @@
+:root {
+  --font-family: "Source Sans Pro", "Ubuntu", sans-serif;
+  --color-background: #13161e;
+  --color-background-medium: #595969;
+  --color-background-lighter: #9f9fb4;
+  --color-background-lightest: #707183;
+  --color-background-darker: #000;
+  --color-text-darker: #302f44;
+  --color-text-lighter: #fafcfe;
+  --color-accent: #ff7353;
+  --box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 0.75);
+  --color-danger: #e33b3b;
+}
+
+html,
+body {
+  user-select: none;
+  width: 100%;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: transparent;
+  color: var(--color-text-lighter);
+  overflow: hidden;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.shooting-stars-bg {
+  position: absolute;
+  background-color: var(--color-background);
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.shooting-stars-bg img {
+  position: absolute;
+}
+
+.shooting-stars-bg img:nth-child(1) {
+  top: 20px;
+  right: 30%;
+}
+
+.shooting-stars-bg img:nth-child(2) {
+  bottom: 10%;
+  right: 12%;
+}
+
+.shooting-stars-bg img:nth-child(3) {
+  bottom: 40%;
+  left: 5%;
+}
+
+a {
+  font-size: 1rem;
+  color: var(--color-background-lighter);
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  display: inline-block;
+}
+
+a::after {
+  content: " ";
+  background-color: var(--color-background-lighter);
+  width: 0%;
+  margin: 0 auto;
+  height: 2px !important;
+  display: block;
+  transition-property: width;
+  transition-duration: 0.3s;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+.btn {
+  background-color: transparent;
+  color: var(--color-text-lighter);
+  border: 1px solid var(--color-text-lighter);
+  border-radius: 5px;
+  padding: 0px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+  /* background-color: var(--color-text-darker); */
+  border-color: var(--color-accent);
+}
+
+.btn img {
+  width: 20px;
+  height: 90%;
+}
+
+.btn span {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.btn.primary {
+  background-color: var(--color-accent);
+  color: var(--color-background);
+  border-color: var(--color-accent);
+}
+
+.btn.primary:hover {
+  background-color: var(--color-text-darker);
+  color: var(--color-accent);
+}
+
+.btn.outline {
+  border: 1px solid var(--color-accent);
+}
+
+input[type="text"],
+input[type="password"] {
+  background-color: transparent;
+  color: var(--color-text-lighter);
+  border: 1px solid var(--color-text-lighter);
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+.danger {
+  color: var(--color-danger) !important;
+}
+
+.logo-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 60px;
+}
+
+.loading {
+  --loading-spinner-radius: 15px;
+  --loading-spinner-border: 2px dashed var(--color-text-lighter);
+  width: var(--loading-spinner-radius);
+  height: var(--loading-spinner-radius);
+  border-radius: 50%;
+  border: var(--loading-spinner-border);
+  /* border-bottom: var(--loading-spinner-border);
+  border-left: transparent;
+  border-right: transparent; */
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.message {
+  /* background-color: var(--color-accent); */
+  color: var(--color-text-lighter);
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}

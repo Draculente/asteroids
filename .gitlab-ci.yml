@@ -1,0 +1,65 @@
+# Build und Deployment Pipeline
+# Do not change until you know what you are doing !!!
+
+image: "thlmylab/swakkd:stable"
+
+variables:
+  DOMAIN: ""
+  INGRESS: "True"
+
+stages:
+- prepare
+- build
+- deploy
+
+registry-cred:
+  stage: prepare
+  script:
+  - kubectl delete secret gitlab-registry-$CI_PROJECT_ID || true
+  - "kubectl create secret docker-registry gitlab-registry-$CI_PROJECT_ID \
+              --docker-server=$CI_REGISTRY \
+              --docker-username=image-registry \ 
+              --docker-password=$CI_REGISTRY_TOKEN"
+
+frontend-build:
+  stage: build
+  image: docker:dind
+  services: ["docker:dind"]
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/frontend-$CI_COMMIT_REF_NAME:latest ./frontend
+    - docker push $CI_REGISTRY_IMAGE/frontend-$CI_COMMIT_REF_NAME:latest
+
+backend-build:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/backend-$CI_COMMIT_REF_NAME:latest ./backend
+    - docker push $CI_REGISTRY_IMAGE/backend-$CI_COMMIT_REF_NAME:latest
+
+frontend-deploy:
+  stage: deploy
+  script:
+  - mo deploy/frontend/deployment.yaml | kubectl delete -f - || true
+  - mo deploy/frontend/deployment.yaml | kubectl apply -f -
+  - mo deploy/frontend/service.yaml | kubectl apply -f -
+
+backend-deploy:
+  stage: deploy 
+  script:
+  - mo deploy/backend/deployment.yaml | kubectl delete -f - || true
+  - mo deploy/backend/service.yaml | kubectl apply -f -
+  - mo deploy/backend/volume.yaml | kubectl apply -f -
+  - mo deploy/backend/database.yaml | kubectl apply -f -
+  - mo deploy/backend/deployment.yaml | kubectl apply -f -
+
+ingress:
+  stage: deploy
+  only:
+    variables:
+      - $INGRESS == "True"
+  script:
+  - HOST=asteroids.$DOMAIN mo deploy/webapp-ing.yaml | kubectl apply -f -
