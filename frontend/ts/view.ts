@@ -1,6 +1,6 @@
 import {
     coinsEl, field, scoreEl, ship, startBtn, livesEl, shipContainer, shootRefillEl, hotkeysEl,
-    gameOverEl, shopEl, shopItemContainer, shopItemTemplate, errorEl, loggedInEl, usernameEl, loginScreen, userMenuContainer, loadingContainer, pauseIcon, playIcon, validatingTokenMessageEl, loginScreenForm
+    gameOverEl, shopEl, shopItemContainer, shopItemTemplate, errorEl, loadingContainer, pauseIcon, playIcon
 } from "./elements";
 import Model, {
     Enemy, Projectile, GameState, Ship, Item
@@ -22,18 +22,7 @@ export default class View {
             gameOverEl.classList.add("hidden");
         }
 
-        this.renderLoginBtn();
         this.renderHotkeys();
-
-        this.displayIf(this.model.isLoginScreenOpen, loginScreen);
-
-        this.displayIfR(this.model.loggedIn, userMenuContainer, "with-menu");
-
-        this.displayIfR(this.model.loading, loadingContainer, "showing");
-
-        this.displayIf(!this.model.validatingToken, loginScreenForm);
-
-        this.displayIf(this.model.validatingToken, validatingTokenMessageEl);
 
         this.displayIf(this.model.errorMessage !== undefined, errorEl);
         this.renderError();
@@ -98,19 +87,6 @@ export default class View {
 
     private renderError() {
         errorEl.innerText = this.model.errorMessage!;
-    }
-
-    private renderLoginBtn() {
-        const name = this.model.username ?? "";
-
-        usernameEl.innerText = name;
-        this.displayIf(this.model.loggedIn, usernameEl);
-
-        if (this.model.loggedIn) {
-            loggedInEl.innerText = "Logged in as";
-        } else {
-            loggedInEl.innerText = "Login";
-        }
     }
 
     private shopItemsAreEqual(items: Item[]) {

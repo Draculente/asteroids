@@ -1,7 +1,6 @@
 import { GameRessource } from "../bindings/GameRessource";
 import { ItemLevelRessource } from "../bindings/ItemLevelRessource";
 import { Enemy, Field, GameModel, GameState, Item, Projectile, Ship } from "../pkg";
-import Api from "./api";
 import HotkeyHandler, { Hotkey } from "./hotkeys";
 import ViewModel from "./view_model";
 
@@ -10,7 +9,6 @@ export * from "../pkg";
 
 export default class Model {
     private gameModel: GameModel;
-    private apiModel: Api;
     private viewModel: ViewModel;
     private hotkeyModel: HotkeyHandler;
     private lastFrameGameOver: boolean = false;
@@ -19,21 +17,8 @@ export default class Model {
 
     constructor() {
         this.gameModel = GameModel.new();
-        this.apiModel = new Api();
         this.viewModel = new ViewModel();
         this.hotkeyModel = new HotkeyHandler();
-
-        this.apiModel.registerOnLogin(() => {
-            this.loadLatestGame();
-        });
-        this.apiModel.registerOnLogin(() => {
-            console.log("Logged in as " + this.username);
-        });
-        this.registerOnGameOver(() => {
-            const id = this.gameModel.get_id();
-            if (id)
-                this.apiModel.setGameEnded(id);
-        })
     }
 
     registerHotkeys(hotkeys: Hotkey[]) {
@@ -45,7 +30,6 @@ export default class Model {
     }
 
     handleHotkey(e: KeyboardEvent) {
-        if (this.isLoginScreenOpen) return;
         this.hotkeyModel.handleHotkey(e);
     }
 
@@ -55,10 +39,6 @@ export default class Model {
 
     async startGame() {
         this.gameModel.start_game();
-        let gameId = await this.apiModel.createGame(this.gameRessource);
-        if (gameId) {
-            this.gameModel.set_id(gameId);
-        }
     }
 
     toggleGameState(): void {
@@ -81,7 +61,6 @@ export default class Model {
 
     pauseGame(): void {
         this.gameModel.pause_game();
-        this.saveGame();
     }
 
     resumeGame(): void {
@@ -90,7 +69,6 @@ export default class Model {
 
     buyItem(itemId: number): void {
         this.gameModel.buy_item(itemId);
-        this.saveGame();
     }
 
     toggleShop(): void {
@@ -106,78 +84,14 @@ export default class Model {
         this.gameModel.dismiss_error();
     }
 
-    register(username: string, password: string): void {
-        this.apiModel.register(username, password);
-    }
-
-    login(username: string, password: string): void {
-        this.apiModel.login(username, password);
-    }
-
-    logout(): void {
-        this.apiModel.logout();
-    }
-
-    deleteAccount(): void {
-        this.apiModel.deleteAccount();
-    }
-
-    closeLoginScreen(): void {
-        this.viewModel.closeLoginScreen();
-    }
-
-    openLoginScreen(): void {
-        this.viewModel.openLoginScreen();
-    }
-
-    private loadGameFromRessource(gameRessource: GameRessource) {
-        if (!gameRessource.ended)
-            this.gameModel.load_game(gameRessource);
-    }
-
-    saveGame(): void {
-        if (this.loggedIn)
-            this.apiModel.saveGame(this.gameRessource);
-    }
-
-    private async loadLatestGame() {
-        let gameRessource = await this.apiModel.loadGame();
-
-        if (gameRessource)
-            this.loadGameFromRessource(gameRessource)
-    }
-
     async endGame() {
         this.gameModel.end_game();
-        if (this.loggedIn) {
-            await this.apiModel.setGameEnded(this.gameModel.get_id()!);
-        }
     }
 
     // Getters
 
     get hotkeys(): Hotkey[] {
         return this.hotkeyModel.hotkeys;
-    }
-
-    get loading(): boolean {
-        return this.apiModel.loading;
-    }
-
-    get validatingToken(): boolean {
-        return this.apiModel.validatingToken;
-    }
-
-    get isLoginScreenOpen(): boolean {
-        return this.viewModel.loginScreenOpen(this.loggedIn);
-    }
-
-    get loggedIn(): boolean {
-        return this.apiModel.loggedIn;
-    }
-
-    get username(): string {
-        return this.apiModel.username;
     }
 
     get isGameOver(): boolean {
@@ -190,7 +104,7 @@ export default class Model {
     }
 
     get errorMessage(): string | undefined {
-        return this.apiModel.errorMessage || this.gameModel.get_error_message();
+        return this.gameModel.get_error_message();
     }
 
     get gameState(): GameState {

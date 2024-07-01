@@ -1,4 +1,4 @@
-import { field, startBtn, gameOverEl, shopCloseBtn, errorEl, loginScreen, loggedInEl, loginScreenBtn, loginScreenForm, loginBtn, registerBtn, logoutButton, deleteAccountBtn, endGameBtn } from "./elements";
+import { field, startBtn, gameOverEl, shopCloseBtn, errorEl, endGameBtn } from "./elements";
 import View from "./view";
 import Model, { GameState, key } from "./model";
 
@@ -75,19 +75,6 @@ errorEl.addEventListener("click", () => {
 });
 
 
-loginScreen.addEventListener("click", (e) => {
-    if (e.target === loginScreen) {
-        model.closeLoginScreen();
-    }
-})
-
-loginScreenBtn.addEventListener("click", () => {
-    if (!model.loggedIn) {
-        model.openLoginScreen();
-    }
-})
-
-
 window.addEventListener("keydown", (e) => {
     model.handleHotkey(e)
 })
@@ -97,43 +84,12 @@ enum LoginScreenAction {
     Register
 }
 
-function loginScreenSubmit(action: LoginScreenAction) {
-    return async () => {
-        const form = new FormData(loginScreenForm);
-        const username = form.get("username") as string;
-        const password = form.get("password") as string;
-        if (action === LoginScreenAction.Login) {
-            await model.login(username, password);
-        } else {
-            model.register(username, password);
-        }
-    }
-}
-
-loginBtn.addEventListener("click", loginScreenSubmit(LoginScreenAction.Login));
-
-registerBtn.addEventListener("click", loginScreenSubmit(LoginScreenAction.Register));
-
-loginScreenForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    loginScreenSubmit(LoginScreenAction.Login)();
-})
-
-logoutButton.addEventListener("click", () => {
-    model.logout();
-});
-
-deleteAccountBtn.addEventListener("click", () => {
-    model.deleteAccount();
-})
-
 endGameBtn.addEventListener("click", () => {
     model.endGame();
 })
 
 window.onbeforeunload = (e) => {
     clearInterval(gameLoopIntervall);
-    model.saveGame();
     if (model.gameState !== GameState.NotRunning)
         e.preventDefault()
 }
